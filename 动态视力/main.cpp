@@ -12,12 +12,12 @@
 #include <windows.h>
 #include <pthread.h>
 #define TITLESIZE 80
-#define KEY_DOWN(vk_c)(GetAsyncKeyState(vk_c)&0x8000)
 #define DELAY 1
-#define MAXSPEED 10
+#define MAXSPEED 10a
 #define MINSPEED 1
 #define MAXRADIUS 30
 #define MINRADIUS 1
+#define KEY_DOWN(vk_c)(GetAsyncKeyState(vk_c)&0x8000)
 
 unsigned short GetUShortVal(void);
 void DrawBall(int x, int y, unsigned short ballRadius);
@@ -38,7 +38,7 @@ short addY_aux = 0;
 
 int main(void)
 {    /* 初始化小球位置 */
-	int x = windowWidth / 2, y = windowHeight / 2;
+    int x = windowWidth / 2, y = windowHeight / 2;
 
     /* 获取窗口宽高和小球半径 */
     printf("输入窗口宽：");
@@ -49,7 +49,7 @@ int main(void)
     ballRadius = GetUShortVal();
 
     /* 窗口实际显示区大小为0,0 到 windowWidth-1, windowHeight-1 */
-	initgraph(windowWidth, windowHeight);
+    initgraph(windowWidth, windowHeight);
 
     /* 创建一个线程响应键盘消息 */
     pthread_t t;
@@ -60,13 +60,13 @@ int main(void)
     }
 
     /* 绘制和移动小球 */
-	while (1)
-	{
-		DrawBall(x, y, ballRadius);
-		Sleep(DELAY);
-		IfTouchBorder(x, y);
+    while (1)
+    {
+        DrawBall(x, y, ballRadius);
+        Sleep(DELAY);
+        IfTouchBorder(x, y);
         IfOverBorder(x, y);
-		WipeBall(x, y, ballRadius);
+        WipeBall(x, y, ballRadius);
         if (addX_aux != 0)
             x += addX_aux;
         else
@@ -75,8 +75,8 @@ int main(void)
             y += addY_aux;
         else
             y += addY;
-	}
-	return 0;
+    }
+    return 0;
 }
 
 /* 获取输入数值(unsigned short int) */
@@ -103,17 +103,17 @@ unsigned short GetUShortVal(void)
 /* 绘制小球 */
 void DrawBall(int x, int y, unsigned short ballRadius)
 {
-	setlinecolor(WHITE);
-	setfillcolor(WHITE);
-	fillcircle(x, y, ballRadius);
+    setlinecolor(WHITE);
+    setfillcolor(WHITE);
+    fillcircle(x, y, ballRadius);
 }
 
 /* 擦除小球 */
 void WipeBall(int x, int y, unsigned short ballRadius)
 {
-	setlinecolor(BLACK);
-	setfillcolor(BLACK);
-	fillcircle(x, y, ballRadius+3); // +3是防止小球缩小时留下尾迹的简单粗暴的方法
+    setlinecolor(BLACK);
+    setfillcolor(BLACK);
+    fillcircle(x, y, ballRadius+3); // +3是防止小球缩小时留下尾迹的简单粗暴的方法
 }
 
 /* 根据碰壁位置进行速度方向的修改 */
