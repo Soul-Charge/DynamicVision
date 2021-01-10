@@ -13,7 +13,7 @@
 #include <pthread.h>
 #define TITLESIZE 80
 #define DELAY 1
-#define MAXSPEED 10a
+#define MAXSPEED 10
 #define MINSPEED 1
 #define MAXRADIUS 30
 #define MINRADIUS 1
