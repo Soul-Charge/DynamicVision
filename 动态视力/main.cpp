@@ -1,7 +1,7 @@
 /*\
 |*| 编译环境：VS2019
 |*| TODO:
-|*| 1. 解决小球可以越过边界的问题
+|*| 1. 添加轨迹转换功能
 \*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,11 +151,11 @@ void IfTouchBorder(int x, int y)
 void IfOverBorder(int x, int y)
 {
     if (y - ballRadius + addY < 0) // 上
-        addY_aux= y - ballRadius;
+        addY_aux= -abs(y - ballRadius);
     else if (y + ballRadius + addY > windowHeight - 1) // 下
         addY_aux = (windowHeight - 1) - (y + ballRadius);
     else if (x - ballRadius + addX < 0) // 左
-        addX_aux = x - ballRadius;
+        addX_aux = -abs(x - ballRadius);
     else if (x + ballRadius + addX > windowWidth - 1) // 右
         addX_aux = (windowWidth - 1) - (x + ballRadius);
     else
@@ -170,11 +170,11 @@ void* ReactKeyDown(void* pv)
 {
     while (1)
     {
-        /* 按下方向键上并且 addX 和 addY 都小于或等于最大值 */
+        /* 按下方向键上并且 addX 和 addY 都小于最大值 */
         /* addX 和 addY 进行比较运算要先取绝对值，因为此处正负代表方向 */
         /* 同时addX 和 addY 的加减也要根据方向，加速：负的减，正的加，减速则相反 */
         /* 加速 */
-        if (KEY_DOWN(VK_UP) && abs(addX) <= MAXSPEED && abs(addY) <= MAXSPEED)
+        if (KEY_DOWN(VK_UP) && abs(addX) < MAXSPEED && abs(addY) < MAXSPEED)
         {
             if (addX < 0)
                 addX--;
@@ -188,7 +188,7 @@ void* ReactKeyDown(void* pv)
         }
         /* 按下方向键下并且 addX 和 addY 都大或等于于最小值 */
         /* 减速 */
-        else if (KEY_DOWN(VK_DOWN) && abs(addX) >= MINSPEED && abs(addY) >= MINSPEED)
+        else if (KEY_DOWN(VK_DOWN) && abs(addX) > MINSPEED && abs(addY) > MINSPEED)
         {
             if (addX < 0)
                 addX++;
