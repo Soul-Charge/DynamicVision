@@ -39,7 +39,7 @@ short addY_aux = 0;
 int main(void)
 {    /* 初始化小球位置 */
     int x = windowWidth / 2, y = windowHeight / 2;
-    srand(time(0));
+    srand((unsigned int)time(0));
 
     /* 获取窗口宽高和小球半径 */
     printf("输入窗口宽：");
@@ -243,18 +243,21 @@ void DrawTextCenter(LPCTSTR textString)
 /* 改变小球运动轨迹 */
 void ChangeTrack(void)
 {
-    /* 计算速度总和，然后生成一个最小为1，最大为速度总和-1范围内的随机数赋给addX */
     /* addY 则为速度总和减去新 addX */
     /* 考虑正负代表方向，使用绝对值 */
     int speedSum = abs(addX) + abs(addY);
-    if (addX > 0)
-        addX = Rand(1, speedSum - 1);
-    else
-        addX = -Rand(1, speedSum - 1);
-    if (addY > 0)
+    if (speedSum > MAXSPEED)
+    {
+        /* 确保 addY 不会等于0，限制 addX 的范围为[-MAXSPEED,MAXSPEED] */
+        addX = Rand(-MAXSPEED, MAXSPEED);
         addY = speedSum - abs(addX);
+    }
     else
-        addY = -(speedSum - abs(addX));
+    {
+        /* 确保 addY 不会等于0，限制 addX 的范围为[speedSum + 1,speedSum - 1] */
+        addX = Rand(-speedSum + 1, speedSum - 1);
+        addY = speedSum - abs(addX);
+    }
 }
 
 /* 生成 m 到 n (包含 m 和 n ）之间的随机数 */
