@@ -1,10 +1,10 @@
 /*\
 |*| 编译环境：VS2019
 |*| TODO:
-|*| 1. 添加轨迹转换功能
 \*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <math.h>
 #include <easyx.h>
 #include <windows.h>
@@ -23,7 +23,9 @@ void WipeBall(int x, int y, unsigned short ballRadius);
 void IfTouchBorder(int x, int y);
 void IfOverBorder(int x, int y);
 void* ReactKeyDown(void* pv);
-void DrawText(LPCTSTR string);
+void ChangeTrack(void);
+void DrawTextCenter(LPCTSTR string);
+int Rand(int m, int n);
 
 unsigned short windowWidth = 1367; //窗口宽
 unsigned short windowHeight = 697; //窗口高
@@ -37,6 +39,7 @@ short addY_aux = 0;
 int main(void)
 {    /* 初始化小球位置 */
     int x = windowWidth / 2, y = windowHeight / 2;
+    srand(time(0));
 
     /* 获取窗口宽高和小球半径 */
     printf("输入窗口宽：");
@@ -184,7 +187,7 @@ void* ReactKeyDown(void* pv)
                 addY--;
             else
                 addY++;
-            DrawText(_T("SPEED UP"));
+            DrawTextCenter(_T("SPEED UP"));
         }
         /* 按下方向键下并且 addX 和 addY 都大或等于于最小值 */
         /* 减速 */
@@ -198,19 +201,25 @@ void* ReactKeyDown(void* pv)
                 addY++;
             else
                 addY--;
-            DrawText(_T("SPEED DOWN"));
+            DrawTextCenter(_T("SPEED DOWN"));
         }
         /* 按下方向键左并且小球半径小于或等于最大值 */
         else if (KEY_DOWN(VK_LEFT) && ballRadius <= MAXRADIUS)
         {
             ballRadius++;
-            DrawText(_T("RADIUS +"));
+            DrawTextCenter(_T("RADIUS +"));
         }
         /* 按下方向键右并且小球半径大于或等于最小值 */
         else if (KEY_DOWN(VK_RIGHT) && ballRadius >= MINRADIUS)
         {
             ballRadius--;
-            DrawText(_T("RADIUS -"));
+            DrawTextCenter(_T("RADIUS -"));
+        }
+        /* 按下空格键转换小球运动轨迹 */
+        else if (KEY_DOWN(VK_SPACE))
+        {
+            ChangeTrack();
+            DrawTextCenter(_T("Change Track"));
         }
         Sleep(100);
     }
@@ -218,7 +227,7 @@ void* ReactKeyDown(void* pv)
 } 
 
 /* 在窗口中央绘制文字，用法：DrawText(_T("string") */
-void DrawText(LPCTSTR textString)
+void DrawTextCenter(LPCTSTR textString)
 {
     RECT textArea = { 0, 0, windowWidth, windowHeight };
     /* 设置字体为高32像素的白色宋体 */
@@ -229,4 +238,28 @@ void DrawText(LPCTSTR textString)
     settextcolor(BLACK);
     drawtext(textString, &textArea, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
     return;
+}
+
+/* 改变小球运动轨迹 */
+void ChangeTrack(void)
+{
+    /* 计算速度总和，然后生成一个最小为1，最大为速度总和-1范围内的随机数赋给addX */
+    /* addY 则为速度总和减去新 addX */
+    /* 考虑正负代表方向，使用绝对值 */
+    int speedSum = abs(addX) + abs(addY);
+    if (addX > 0)
+        addX = Rand(1, speedSum - 1);
+    else
+        addX = -Rand(1, speedSum - 1);
+    if (addY > 0)
+        addY = speedSum - abs(addX);
+    else
+        addY = -(speedSum - abs(addX));
+}
+
+/* 生成 m 到 n (包含 m 和 n ）之间的随机数 */
+/* 调用方式：Rand(下界, 上界); */
+int Rand(int m, int n)
+{
+    return rand() % (n - m + 1) + m;
 }

@@ -1,2 +1,3 @@
 ﻿  main.cpp
+D:\__Document__\Study\Computing\C\CWorkplace\Project\DynamicVision\动态视力\main.cpp(43,15): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   动态视力.vcxproj -> D:\__Document__\Study\Computing\C\CWorkplace\Project\DynamicVision\x64\Debug\动态视力.exe
